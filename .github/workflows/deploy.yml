@@ -1,0 +1,25 @@
+name: Test CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy ${{ github.ref_name }} to AWS
+    runs-on: ubuntu-latest
+    env:
+      BRANCH_NAME: ${{ github.ref_name }}
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Echo Branch Name
+        run: echo $BRANCH_NAME
