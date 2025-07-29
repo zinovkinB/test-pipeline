@@ -29,3 +29,22 @@ jobs:
 
       - name: Echo Branch Name
         run: echo $BRANCH_NAME
+
+      - name: 🏷️ Generate and Push Next Tag
+        if: success()
+        run: |
+          LAST_TAG=$(git tag --list "build-*" | sort -V | tail -n 1)
+
+          if [ -z "$LAST_TAG" ]; then
+            NEXT_TAG="build-1"
+          else
+            LAST_NUM=$(echo "$LAST_TAG" | sed 's/build-//')
+            NEXT_NUM=$((LAST_NUM + 1))
+            NEXT_TAG="build-${NEXT_NUM}"
+          fi
+
+          echo "Creating new tag: $NEXT_TAG"
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git tag "$NEXT_TAG"
+          git push origin "$NEXT_TAG"
